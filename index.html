@@ -11,7 +11,7 @@
       href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&display=swap"
       rel="stylesheet"
     />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <style>
       * {
         margin: 0;
@@ -64,14 +64,38 @@
         border-color: var(--accent);
       }
 
-      /* Canvas Background */
-      #canvas-container {
+      /* Three.js Canvas Background */
+      #webgl-container {
         position: fixed;
         top: 0;
         left: 0;
         width: 100%;
         height: 100%;
         z-index: 0;
+      }
+
+      /* SVG Path Container */
+      #svg-paths {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: 5;
+      }
+
+      .path-line {
+        fill: none;
+        stroke: rgba(59, 130, 246, 0.3);
+        stroke-width: 2;
+        stroke-dasharray: 1000;
+        stroke-dashoffset: 1000;
+        transition: stroke-dashoffset 1s ease-out;
+      }
+
+      .path-line.active {
+        stroke-dashoffset: 0;
       }
 
       /* Navigation */
@@ -634,14 +658,26 @@
         opacity: 1;
         transform: translateY(0);
       }
+
+      /* Parallax elements */
+      .parallax {
+        transition: transform 0.3s ease-out;
+      }
     </style>
   </head>
   <body>
     <!-- Custom Cursor -->
     <div id="cursor"></div>
 
-    <!-- Canvas Background -->
-    <div id="canvas-container"></div>
+    <!-- Three.js WebGL Container -->
+    <div id="webgl-container"></div>
+
+    <!-- SVG Path Animations -->
+    <svg id="svg-paths" xmlns="http://www.w3.org/2000/svg">
+      <path class="path-line" id="path1" d="M 0 0" />
+      <path class="path-line" id="path2" d="M 0 0" />
+      <path class="path-line" id="path3" d="M 0 0" />
+    </svg>
 
     <!-- Navigation -->
     <nav>
@@ -656,11 +692,11 @@
 
     <!-- Hero Section -->
     <section class="hero">
-      <h1 class="hero-title">
+      <h1 class="hero-title parallax">
         CREATIVE<br>
         TECHNOLOGIST
       </h1>
-      <p class="hero-subtitle">
+      <p class="hero-subtitle parallax">
         Realizing visions through code, design, and innovation
       </p>
       <div class="hero-cta">
@@ -836,9 +872,9 @@
       </div>
     </footer>
 
-    <!-- P5.js Script -->
+    <!-- Three.js + Animations Script -->
     <script>
-      // Custom Cursor
+      // ===== CUSTOM CURSOR =====
       const cursor = document.getElementById('cursor');
       let mouseX = 0, mouseY = 0;
       let cursorX = 0, cursorY = 0;
@@ -863,17 +899,131 @@
         el.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
       });
 
-      // Navbar scroll effect
+      // ===== THREE.JS WEBGL BACKGROUND =====
+      const container = document.getElementById('webgl-container');
+      const scene = new THREE.Scene();
+      const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+      const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      renderer.setPixelRatio(window.devicePixelRatio);
+      container.appendChild(renderer.domElement);
+
+      // Create geometry
+      const geometry = new THREE.IcosahedronGeometry(1, 1);
+      const material = new THREE.MeshBasicMaterial({
+        color: 0x3b82f6,
+        wireframe: true,
+        transparent: true,
+        opacity: 0.15
+      });
+
+      const meshes = [];
+      for (let i = 0; i < 5; i++) {
+        const mesh = new THREE.Mesh(geometry, material.clone());
+        mesh.position.set(
+          (Math.random() - 0.5) * 10,
+          (Math.random() - 0.5) * 10,
+          (Math.random() - 0.5) * 10
+        );
+        mesh.scale.set(
+          Math.random() + 0.5,
+          Math.random() + 0.5,
+          Math.random() + 0.5
+        );
+        scene.add(mesh);
+        meshes.push(mesh);
+      }
+
+      camera.position.z = 5;
+
+      // Particles
+      const particlesGeometry = new THREE.BufferGeometry();
+      const particlesCount = 500;
+      const posArray = new Float32Array(particlesCount * 3);
+
+      for(let i = 0; i < particlesCount * 3; i++) {
+        posArray[i] = (Math.random() - 0.5) * 20;
+      }
+
+      particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+      const particlesMaterial = new THREE.PointsMaterial({
+        size: 0.02,
+        color: 0xffffff,
+        transparent: true,
+        opacity: 0.3
+      });
+
+      const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
+      scene.add(particlesMesh);
+
+      // Animation
+      let scrollY = window.scrollY;
+
+      function animateThree() {
+        requestAnimationFrame(animateThree);
+
+        // Rotate meshes
+        meshes.forEach((mesh, index) => {
+          mesh.rotation.x += 0.001 * (index + 1);
+          mesh.rotation.y += 0.002 * (index + 1);
+        });
+
+        // Rotate particles based on scroll
+        particlesMesh.rotation.y = scrollY * 0.0005;
+        particlesMesh.rotation.x = scrollY * 0.0003;
+
+        // Mouse interaction
+        const mouseXNorm = (mouseX / window.innerWidth - 0.5) * 2;
+        const mouseYNorm = -(mouseY / window.innerHeight - 0.5) * 2;
+
+        camera.position.x = mouseXNorm * 0.5;
+        camera.position.y = mouseYNorm * 0.5;
+        camera.lookAt(scene.position);
+
+        renderer.render(scene, camera);
+      }
+      animateThree();
+
+      // ===== SVG PATH ANIMATIONS =====
+      function updateSVGPaths() {
+        const width = window.innerWidth;
+        const height = window.innerHeight;
+        const scrollPercent = scrollY / (document.body.scrollHeight - height);
+
+        // Create organic curved paths
+        const path1 = document.getElementById('path1');
+        const path2 = document.getElementById('path2');
+        const path3 = document.getElementById('path3');
+
+        const cp1y = scrollPercent * height;
+        const cp2y = (1 - scrollPercent) * height;
+
+        path1.setAttribute('d', `M 0 ${height * 0.3} Q ${width * 0.3} ${cp1y}, ${width} ${height * 0.7}`);
+        path2.setAttribute('d', `M 0 ${height * 0.5} Q ${width * 0.5} ${cp2y}, ${width} ${height * 0.4}`);
+        path3.setAttribute('d', `M 0 ${height * 0.7} Q ${width * 0.7} ${cp1y}, ${width} ${height * 0.3}`);
+
+        // Activate paths based on scroll
+        if (scrollPercent > 0.2) path1.classList.add('active');
+        if (scrollPercent > 0.4) path2.classList.add('active');
+        if (scrollPercent > 0.6) path3.classList.add('active');
+      }
+
+      // ===== NAVBAR SCROLL EFFECT =====
       const nav = document.querySelector('nav');
       window.addEventListener('scroll', () => {
-        if (window.scrollY > 100) {
+        scrollY = window.scrollY;
+
+        if (scrollY > 100) {
           nav.classList.add('scrolled');
         } else {
           nav.classList.remove('scrolled');
         }
+
+        updateSVGPaths();
       });
 
-      // Scroll reveal animation
+      // ===== SCROLL REVEAL ANIMATION =====
       const reveals = document.querySelectorAll('.reveal');
 
       function checkReveal() {
@@ -890,77 +1040,31 @@
       window.addEventListener('scroll', checkReveal);
       checkReveal();
 
-      // P5.js Background Animation
-      let particles = [];
-      const particleCount = 100;
+      // ===== PARALLAX EFFECT =====
+      const parallaxElements = document.querySelectorAll('.parallax');
 
-      function setup() {
-        let canvas = createCanvas(windowWidth, windowHeight);
-        canvas.parent('canvas-container');
+      window.addEventListener('mousemove', (e) => {
+        const x = (e.clientX / window.innerWidth - 0.5) * 20;
+        const y = (e.clientY / window.innerHeight - 0.5) * 20;
 
-        for (let i = 0; i < particleCount; i++) {
-          particles.push(new Particle());
-        }
-      }
-
-      function draw() {
-        background(10, 10, 10, 25);
-
-        particles.forEach((particle, index) => {
-          particle.update();
-          particle.draw();
-
-          // Connect nearby particles
-          for (let j = index + 1; j < particles.length; j++) {
-            const distance = dist(particle.x, particle.y, particles[j].x, particles[j].y);
-            if (distance < 150) {
-              stroke(255, 255, 255, map(distance, 0, 150, 50, 0));
-              strokeWeight(1);
-              line(particle.x, particle.y, particles[j].x, particles[j].y);
-            }
-          }
+        parallaxElements.forEach((el, index) => {
+          const speed = (index + 1) * 0.5;
+          el.style.transform = `translate(${x * speed}px, ${y * speed}px)`;
         });
-      }
+      });
 
-      function windowResized() {
-        resizeCanvas(windowWidth, windowHeight);
-      }
+      // ===== WINDOW RESIZE =====
+      window.addEventListener('resize', () => {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        updateSVGPaths();
+      });
 
-      class Particle {
-        constructor() {
-          this.x = random(width);
-          this.y = random(height);
-          this.vx = random(-0.5, 0.5);
-          this.vy = random(-0.5, 0.5);
-          this.size = random(2, 4);
-        }
+      // Initialize SVG paths
+      updateSVGPaths();
 
-        update() {
-          this.x += this.vx;
-          this.y += this.vy;
-
-          if (this.x < 0 || this.x > width) this.vx *= -1;
-          if (this.y < 0 || this.y > height) this.vy *= -1;
-
-          // Mouse interaction
-          const dx = mouseX - this.x;
-          const dy = mouseY - this.y;
-          const distance = sqrt(dx * dx + dy * dy);
-
-          if (distance < 100) {
-            this.x -= dx * 0.01;
-            this.y -= dy * 0.01;
-          }
-        }
-
-        draw() {
-          noStroke();
-          fill(255, 255, 255, 200);
-          circle(this.x, this.y, this.size);
-        }
-      }
-
-      // Smooth scrolling
+      // ===== SMOOTH SCROLLING =====
       document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function (e) {
           e.preventDefault();
