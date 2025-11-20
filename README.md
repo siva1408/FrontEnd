@@ -1,129 +1,152 @@
-# siva.dev - Personal Portfolio
+# 🍅 PomodoroFlow
 
-A creative and interactive portfolio website built with HTML, CSS, and p5.js, featuring stunning animations and modern design.
+A modern, premium-quality Pomodoro productivity web application inspired by "Session" and "Forest". Built with React, Vite, TailwindCSS, and Firebase.
 
-## 🌟 Features
+## ✨ Features
 
-- **Interactive Background Animation**: Beautiful p5.js dot matrix animation with dynamic tracers
-- **Responsive Design**: Fully responsive layout that works seamlessly across all devices
-- **Modern UI/UX**: Clean, professional design with glassmorphism effects
-- **Smooth Scrolling**: Seamless navigation between sections
-- **Performance Optimized**: Lightweight and fast-loading
+### 🎯 Core Timer System
+- **Custom Durations**: Work (25min), Short Break (5min), Long Break (15min)
+- **Timer Styles**: Circular progress, Horizontal bar, Minimal numeric mode
+- **Smart Controls**: Start/Pause/Reset/Skip
+- **Auto-start**: Configurable auto-start for breaks and work sessions
+- **Sound Notifications**: With volume control
+- **Visual Feedback**: Smooth animations and transitions
 
-## 📋 Sections
+### 📓 Task Management
+- **Full CRUD**: Add, edit, delete, and complete tasks
+- **Categories**: Color-coded task categories
+- **Subtasks**: Break down tasks into smaller pieces
+- **Pomodoro Tracking**: Estimate and track Pomodoros per task
+- **Kanban Board**: Drag & drop tasks between Todo → Doing → Done
+- **Rich Notes**: Markdown support for detailed task notes
 
-1. **Hero**: Eye-catching introduction with call-to-action buttons
-2. **About**: Personal introduction and key highlights
-3. **Skills**: Technology and design expertise showcase
-4. **Projects**: Featured projects with descriptions and links
-5. **Contact**: Multiple ways to get in touch
+### 📊 Analytics Dashboard
+- **Productivity Charts**: Daily, weekly, monthly statistics
+- **Session History**: Complete timeline of all Pomodoro sessions
+- **Time Tracking**: Total focused minutes and session counts
+- **Streak Tracking**: Daily and weekly streak counters
 
-## 🎨 Design Highlights
+### 🎧 Deep Focus Mode
+- **Fullscreen Zen Mode**: Minimal UI for distraction-free work
+- **Ambient Sounds**: Rain, Forest, Coffee shop, White noise
+- **Volume Control**: Adjustable ambient sound levels
 
-- **Glassmorphism**: Frosted glass effect on UI elements
-- **Animation**: Interactive p5.js background with particle system
-- **Typography**: Plus Jakarta Sans for modern, clean readability
-- **Color Palette**: Professional blue and red accent colors
-- **Accessibility**: Semantic HTML and proper contrast ratios
+### 🚫 Distraction Control
+- **Tab Detection**: Auto-pause when switching browser tabs
+- **Idle Detection**: Auto-pause after 5 minutes of inactivity
+- **Notifications**: Browser notifications for session completion
 
-## 🚀 Getting Started
+### 🎮 Gamification
+- **XP System**: Earn experience points for completing Pomodoros
+- **Level System**: Progress through levels as you stay productive
+- **Achievements**: Unlock badges for milestones
+- **Streak Counter**: Track your daily consistency
+- **Celebration Animations**: Confetti for achievements!
+
+### 🎨 Customization
+- **Multiple Themes**: Light, Dark, AMOLED, Gradient themes
+- **Timer Styles**: Switch between circular, horizontal, or minimal
+- **Sound Packs**: Different notification sound options
+
+## 🚀 Tech Stack
+
+### Frontend
+- **React 19** - UI framework
+- **Vite** - Build tool and dev server
+- **TailwindCSS** - Utility-first CSS framework
+- **Framer Motion** - Animation library
+- **Zustand** - State management
+- **Recharts** - Data visualization
+- **@dnd-kit** - Drag and drop functionality
+
+### Backend & Services
+- **Firebase Authentication** - User management
+- **Cloud Firestore** - Real-time database
+- **Netlify** - Hosting and deployment
+
+## 📦 Installation
 
 ### Prerequisites
+- Node.js 18 or higher
+- npm or yarn
+- Firebase account (for backend features)
 
-No build tools required! This is a vanilla HTML/CSS/JavaScript project.
+### Setup Instructions
 
-### Installation
-
-1. Clone the repository:
+1. **Clone the repository**
 ```bash
-git clone https://github.com/yourusername/FrontEnd.git
+git clone <repository-url>
 cd FrontEnd
 ```
 
-2. Open `index.html` in your browser:
+2. **Install dependencies**
 ```bash
-# On macOS
-open index.html
-
-# On Linux
-xdg-open index.html
-
-# On Windows
-start index.html
+npm install
 ```
 
-Or simply drag and drop `index.html` into your browser.
+3. **Configure Firebase**
 
-### Deployment
+Create a `.env` file in the root directory:
 
-You can deploy this website to any static hosting service:
-
-- **GitHub Pages**: Push to `gh-pages` branch
-- **Netlify**: Drag and drop the folder
-- **Vercel**: Connect your repository
-- **Cloudflare Pages**: Deploy from Git
-
-## 🛠️ Technologies Used
-
-- **HTML5**: Semantic markup
-- **CSS3**: Modern styling with flexbox and grid
-- **JavaScript (ES6+)**: Interactive features
-- **p5.js**: Creative coding and animations
-- **Google Fonts**: Plus Jakarta Sans typography
-
-## 🎯 Customization
-
-### Update Personal Information
-
-1. **Name and Title**: Edit the hero section in `index.html`
-2. **About Text**: Update the about section content
-3. **Skills**: Modify the skill tags in both Technology and Design categories
-4. **Projects**: Replace project cards with your own work
-5. **Contact Information**: Update email, phone, and social links
-
-### Color Scheme
-
-The main colors are defined in the CSS:
-- Primary: `#3b82f6` (Blue)
-- Secondary: `#ef4444` (Red)
-- Success: `#22c55e` (Green)
-- Background: `#f8fafc`
-
-### Animation Settings
-
-Customize the p5.js animation in the `config` object:
-```javascript
-const config = {
-  dotSize: 2.5,
-  dotColor: "#e2e8f0",
-  targetDotCount: 1800,
-  tracerSpeed: 0.015,
-  // ... more settings
-};
+```env
+VITE_FIREBASE_API_KEY=your_api_key_here
+VITE_FIREBASE_AUTH_DOMAIN=your_auth_domain_here
+VITE_FIREBASE_PROJECT_ID=your_project_id_here
+VITE_FIREBASE_STORAGE_BUCKET=your_storage_bucket_here
+VITE_FIREBASE_MESSAGING_SENDER_ID=your_messaging_sender_id_here
+VITE_FIREBASE_APP_ID=your_app_id_here
 ```
 
-## 📱 Browser Support
+4. **Run development server**
+```bash
+npm run dev
+```
 
-- Chrome (latest)
-- Firefox (latest)
-- Safari (latest)
-- Edge (latest)
-- Opera (latest)
+5. **Build for production**
+```bash
+npm run build
+```
 
-## 📄 License
+## 🌐 Deployment to Netlify
 
-This project is open source and available under the [MIT License](LICENSE).
+### Deploy via Netlify Dashboard
 
-## 🤝 Contributing
+1. Push your code to GitHub
+2. Go to [Netlify](https://netlify.com)
+3. Click "New site from Git"
+4. Select your repository
+5. Configure build settings:
+   - Build command: `npm run build`
+   - Publish directory: `dist`
+6. Add environment variables in Netlify dashboard
+7. Deploy!
 
-Contributions, issues, and feature requests are welcome!
+## 📂 Project Structure
 
-## 📧 Contact
+```
+FrontEnd/
+├── src/
+│   ├── components/        # React components
+│   ├── views/            # Main view components
+│   ├── hooks/            # Custom React hooks
+│   ├── store/            # Zustand stores
+│   ├── services/         # Firebase services
+│   ├── utils/            # Utility functions
+│   └── assets/           # Static assets
+├── public/               # Public assets
+├── .env.example          # Environment template
+├── netlify.toml          # Netlify configuration
+└── package.json          # Dependencies
+```
 
-- Email: hello@siva.dev
-- Website: [siva.dev](https://siva.dev)
-- GitHub: [@yourusername](https://github.com/yourusername)
+## 🎯 Usage Guide
+
+1. **Start a Pomodoro** - Click Play to begin a work session
+2. **Manage Tasks** - Add and organize tasks in the Tasks view
+3. **Track Progress** - Check Analytics for productivity trends
+4. **Customize** - Adjust settings to match your workflow
+5. **Focus Mode** - Use fullscreen mode for deep work
 
 ---
 
-**Made with ❤️ and code**
+Made with ❤️ for productive people everywhere.
